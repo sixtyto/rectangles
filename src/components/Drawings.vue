@@ -9,35 +9,81 @@
     :height="boundingBoxHeight"
     :style="boundingBoxStyles"
   />
-  <circle r="4" fill="rgb(255, 0, 0)" :cx="rectangleX" :cy="rectangleY" />
-  <text fill="rgb(255, 255, 255)" :x="rectangleX + 10" :y="rectangleY - 5">
+  <circle r="4" fill="red" :cx="rectangleX" :cy="rectangleY" />
+  <text fill="white" :x="rectangleX + 10" :y="rectangleY - 5">
     {{ rectangleRotation }}°
   </text>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { mapState } from "vuex";
 
 export default defineComponent({
   props: ["rectangle"],
+  errorCaptured() {
+    console.log("error");
+  },
   computed: {
     rectangleHeight(): number {
-      return this.rectangle.height;
+      if (
+        typeof this.rectangle.height === "number" &&
+        this.rectangle.height > 0 &&
+        this.rectangle.height < this.projectInfo.height
+      )
+        return this.rectangle.height;
+      else {
+        this.setError();
+        return 0;
+      }
     },
     rectangleWidth(): number {
-      return this.rectangle.width;
+      if (
+        typeof this.rectangle.width === "number" &&
+        this.rectangle.width > 0 &&
+        this.rectangle.width < this.projectInfo.width
+      )
+        return this.rectangle.width;
+      else {
+        this.setError();
+        return 0;
+      }
     },
-    rectangleX(): string {
-      return this.rectangle.x;
+    rectangleX(): number {
+      if (
+        typeof this.rectangle.x === "number" &&
+        this.rectangle.x > 0 &&
+        this.rectangle.x < this.projectInfo.width
+      )
+        return this.rectangle.x;
+      else {
+        this.setError();
+        return 0;
+      }
     },
-    rectangleY(): string {
-      return this.rectangle.y;
+    rectangleY(): number {
+      if (
+        typeof this.rectangle.y === "number" &&
+        this.rectangle.y > 0 &&
+        this.rectangle.y < this.projectInfo.height
+      )
+        return this.rectangle.y;
+      else {
+        this.setError();
+        return 0;
+      }
     },
     rectangleRotation(): number {
-      return this.rectangle.rotation;
+      if (typeof this.rectangle.rotation === "number")
+        return this.rectangle.rotation;
+      else {
+        this.setError();
+        return 0;
+      }
     },
     rectangleColor(): string {
-      return this.rectangle.color;
+      if (typeof this.rectangle.color === "string") return this.rectangle.color;
+      else return "black";
     },
     rectangleRotationInRad(): number {
       return (this.rectangleRotation * Math.PI) / 180;
@@ -75,6 +121,12 @@ export default defineComponent({
         fillOpacity: 0,
         strokeOpacity: 0.5
       };
+    },
+    ...mapState(["projectInfo"])
+  },
+  methods: {
+    setError() {
+      this.$store.commit("setError", true);
     }
   }
 });

@@ -4,7 +4,7 @@
       <board-controls />
       <project-info />
       <hr />
-
+      <the-error />
       <the-board />
     </div>
   </div>
@@ -15,22 +15,14 @@ import { defineComponent } from "vue";
 import TheBoard from "./components/TheBoard.vue";
 import BoardControls from "./components/BoardControls.vue";
 import ProjectInfo from "./components/ProjectInfo.vue";
+import TheError from "./components/TheError.vue";
 
 export default defineComponent({
   components: {
     TheBoard,
     BoardControls,
-    ProjectInfo
-  },
-  computed: {
-    id: {
-      get(): string {
-        return this.$store.state.id;
-      },
-      set(value: string) {
-        this.$store.commit("setId", value);
-      }
-    }
+    ProjectInfo,
+    TheError
   }
 });
 </script>

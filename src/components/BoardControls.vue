@@ -18,7 +18,19 @@
 import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 
-export default defineComponent({ methods: mapActions(["getRectangles"]) });
+export default defineComponent({
+  computed: {
+    id: {
+      get(): string {
+        return this.$store.state.id;
+      },
+      set(value: string) {
+        this.$store.commit("setId", value);
+      }
+    }
+  },
+  methods: mapActions(["getRectangles"])
+});
 </script>
 
 <style></style>

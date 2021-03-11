@@ -2,9 +2,10 @@ import { createStore } from "vuex";
 import axios from "axios";
 
 export type State = {
+  id: string;
+  isError: boolean;
   projectInfo: object;
   rectangles: object[];
-  id: string;
 };
 
 export default createStore<State>({
@@ -16,6 +17,7 @@ export default createStore<State>({
       name: "",
       width: 0
     },
+    isError: false,
     rectangles: [],
     id: ""
   },
@@ -26,6 +28,9 @@ export default createStore<State>({
     },
     setId(state, payload) {
       state.id = payload;
+    },
+    setError(state, payload) {
+      state.isError = payload;
     }
   },
   actions: {
@@ -43,8 +48,9 @@ export default createStore<State>({
           );
           commit("setProjectInfo", data.data.project);
           commit("setId", "");
+          this.commit("setError", false);
         } catch {
-          this.dispatch("getRandomSeed");
+          this.commit("setError", true);
         }
       } else {
         this.dispatch("getRandomSeed");
