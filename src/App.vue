@@ -31,7 +31,6 @@ import { mapActions, mapState } from "vuex";
 import TheBoard from "./components/TheBoard.vue";
 
 export default defineComponent({
-  name: "App",
   components: {
     TheBoard
   },
