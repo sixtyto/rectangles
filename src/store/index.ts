@@ -21,18 +21,15 @@ export default createStore<State>({
   },
   mutations: {
     setProjectInfo(state, payload) {
-      console.log("payload", payload);
       state.projectInfo = payload;
       state.rectangles = payload.items;
     },
     setId(state, payload) {
-      console.log("payload", payload);
       state.id = payload;
     }
   },
   actions: {
     async getRandomSeed({ commit, dispatch }) {
-      console.log("get link");
       const data = await axios.get("http://recruitment01.vercel.app/api/init");
       commit("setId", data.data.id);
       dispatch("getRectangles");
@@ -40,7 +37,6 @@ export default createStore<State>({
     async getRectangles({ commit, state }) {
       const { id } = state;
       if (id) {
-        console.log("get get");
         try {
           const data = await axios.get(
             `http://recruitment01.vercel.app/api/project/${id}`
