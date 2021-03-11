@@ -5,9 +5,9 @@
     :style="rectangleStyles"
   />
   <rect
-    :width="widthOfBoundingBox"
-    :height="heightOfBoundingBox"
-    :style="stylesOfBoundingBox"
+    :width="boundingBoxWidth"
+    :height="boundingBoxHeight"
+    :style="boundingBoxStyles"
   />
   <circle r="4" fill="rgb(255, 0, 0)" :cx="rectangleX" :cy="rectangleY" />
   <text fill="rgb(255, 255, 255)" :x="rectangleX + 10" :y="rectangleY - 5">
@@ -52,23 +52,23 @@ export default defineComponent({
         fill: this.rectangleColor
       };
     },
-    heightOfBoundingBox(): number {
+    boundingBoxHeight(): number {
       return (
         this.rectangleWidth * Math.abs(Math.sin(this.rectangleRotationInRad)) +
         this.rectangleHeight * Math.abs(Math.cos(this.rectangleRotationInRad))
       );
     },
-    widthOfBoundingBox(): number {
+    boundingBoxWidth(): number {
       return (
         this.rectangleWidth * Math.abs(Math.cos(this.rectangleRotationInRad)) +
         this.rectangleHeight * Math.abs(Math.sin(this.rectangleRotationInRad))
       );
     },
-    stylesOfBoundingBox(): object {
+    boundingBoxStyles(): object {
       return {
         transform: `translate(${this.rectangle.x}px, ${this.rectangleY}px)
-          translate(-${this.widthOfBoundingBox / 2}px, -${+this
-          .heightOfBoundingBox / 2}px)`,
+          translate(-${this.boundingBoxWidth / 2}px, -${+this
+          .boundingBoxHeight / 2}px)`,
         stroke: `rgb(255, 0, 255)`,
         strokeWidth: 3,
         fill: "none",

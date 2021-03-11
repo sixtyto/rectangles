@@ -9,7 +9,13 @@ export type State = {
 
 export default createStore<State>({
   state: {
-    projectInfo: {},
+    projectInfo: {
+      id: "",
+      height: 0,
+      items: [],
+      name: "",
+      width: 0
+    },
     rectangles: [],
     id: ""
   },
@@ -39,7 +45,6 @@ export default createStore<State>({
           const data = await axios.get(
             `http://recruitment01.vercel.app/api/project/${id}`
           );
-
           commit("setProjectInfo", data.data.project);
           commit("setId", "");
         } catch {

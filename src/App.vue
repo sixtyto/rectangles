@@ -1,25 +1,17 @@
 <template>
-  <div class="container-fluid">
+  <div class="container">
     <div class="row">
-      <form class="col-6 my-2 offset-3" @submit.prevent="getRectangles">
-        <label for="seed" class="form-label">enter seed:</label>
-        <input
-          class="form-control"
-          type="text"
-          id="seed"
-          placeholder="leave me empty for random seed"
-          v-model="id"
-        />
-      </form>
-      <div class="row">
-        <div class="col-6 offset-3">
-          <h3>Name: {{ projectInfo.name }}</h3>
-          <h3>Id: {{ projectInfo.id }}</h3>
+      <board-controls />
+
+      <div class="row" v-if="isReady">
+        <div class=" col-sm-10 offset-sm-1 text_wrapper">
+          <p>Name: {{ projectName }}</p>
+          <p>Id: {{ projectId }}</p>
         </div>
       </div>
-      <button class="btn btn-primary my-2" @click.prevent="getRectangles">
-        Get seed
-      </button>
+
+      <hr />
+
       <the-board />
     </div>
   </div>
@@ -27,12 +19,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions, mapState } from "vuex";
+import { mapState } from "vuex";
 import TheBoard from "./components/TheBoard.vue";
+import BoardControls from "./components/BoardControls.vue";
 
 export default defineComponent({
   components: {
-    TheBoard
+    TheBoard,
+    BoardControls
   },
   computed: {
     id: {
@@ -43,10 +37,16 @@ export default defineComponent({
         this.$store.commit("setId", value);
       }
     },
+    projectName(): string {
+      return this.projectInfo.name;
+    },
+    projectId(): string {
+      return this.projectInfo.id;
+    },
+    isReady(): boolean {
+      return this.projectInfo.items?.length !== 0;
+    },
     ...mapState(["projectInfo"])
-  },
-  methods: {
-    ...mapActions(["getRectangles"])
   }
 });
 </script>
