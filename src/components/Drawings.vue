@@ -16,11 +16,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import { mapState } from "vuex";
 
+type Rectangle = {
+  id: string;
+  color: string;
+  rotation: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export default defineComponent({
-  props: ["rectangle"],
+  props: {
+    rectangle: {
+      type: Object as PropType<Rectangle>,
+      required: true
+    }
+  },
   errorCaptured() {
     console.log("error");
   },
@@ -32,10 +47,8 @@ export default defineComponent({
         this.rectangle.height < this.projectInfo.height
       )
         return this.rectangle.height;
-      else {
-        this.setError();
-        return 0;
-      }
+      this.setError();
+      return 0;
     },
     rectangleWidth(): number {
       if (
@@ -44,10 +57,8 @@ export default defineComponent({
         this.rectangle.width < this.projectInfo.width
       )
         return this.rectangle.width;
-      else {
-        this.setError();
-        return 0;
-      }
+      this.setError();
+      return 0;
     },
     rectangleX(): number {
       if (
@@ -56,10 +67,8 @@ export default defineComponent({
         this.rectangle.x < this.projectInfo.width
       )
         return this.rectangle.x;
-      else {
-        this.setError();
-        return 0;
-      }
+      this.setError();
+      return 0;
     },
     rectangleY(): number {
       if (
@@ -68,22 +77,18 @@ export default defineComponent({
         this.rectangle.y < this.projectInfo.height
       )
         return this.rectangle.y;
-      else {
-        this.setError();
-        return 0;
-      }
+      this.setError();
+      return 0;
     },
     rectangleRotation(): number {
       if (typeof this.rectangle.rotation === "number")
         return this.rectangle.rotation;
-      else {
-        this.setError();
-        return 0;
-      }
+      this.setError();
+      return 0;
     },
     rectangleColor(): string {
       if (typeof this.rectangle.color === "string") return this.rectangle.color;
-      else return "black";
+      return "black";
     },
     rectangleRotationInRad(): number {
       return (this.rectangleRotation * Math.PI) / 180;

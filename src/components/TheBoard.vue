@@ -35,7 +35,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .board {
   width: 100vw;
   background-color: pink;
