@@ -43,7 +43,7 @@ export default createStore<State>({
   },
   actions: {
     async getRandomSeed({ commit, dispatch }) {
-      const data = await axios.get("http://recruitment01.vercel.app/api/init");
+      const data = await axios.get("https://recruitment01.vercel.app/api/init");
       commit("setId", data.data.id);
       dispatch("getRectangles");
     },
@@ -52,7 +52,7 @@ export default createStore<State>({
       if (id) {
         try {
           const data = await axios.get(
-            `http://recruitment01.vercel.app/api/project/${id}`
+            `https://recruitment01.vercel.app/api/project/${id}`
           );
           console.log(data);
           commit("setProjectInfo", data.data.project);

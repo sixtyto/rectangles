@@ -36,9 +36,6 @@ export default defineComponent({
       required: true
     }
   },
-  errorCaptured() {
-    console.log("error");
-  },
   computed: {
     rectangleHeight(): number {
       if (
