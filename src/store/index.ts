@@ -54,7 +54,6 @@ export default createStore<State>({
           const data = await axios.get(
             `https://recruitment01.vercel.app/api/project/${id}`
           );
-          console.log(data);
           commit("setProjectInfo", data.data.project);
           commit("setId", "");
           this.commit("setError", false);
