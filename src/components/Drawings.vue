@@ -3,6 +3,10 @@
     :width="rectangleWidth"
     :height="rectangleHeight"
     :style="rectangleStyles"
+    @mousedown.stop="setDrag"
+    @mouseleave="setDrop"
+    @mouseup.stop="setDrop"
+    @mousemove.stop="drag"
   />
   <rect
     :width="boundingBoxWidth"
@@ -30,6 +34,13 @@ type Rectangle = {
 };
 
 export default defineComponent({
+  data: () => ({
+    draggable: false,
+    offsetX: 0,
+    offsetY: 0,
+    mouseX: 0,
+    mouseY: 0
+  }),
   props: {
     rectangle: {
       type: Object as PropType<Rectangle>,
@@ -63,7 +74,7 @@ export default defineComponent({
         this.rectangle.x > 0 &&
         this.rectangle.x < this.projectInfo.width
       )
-        return this.rectangle.x;
+        return this.rectangle.x + this.offsetX;
       this.setError();
       return 0;
     },
@@ -73,7 +84,7 @@ export default defineComponent({
         this.rectangle.y > 0 &&
         this.rectangle.y < this.projectInfo.height
       )
-        return this.rectangle.y;
+        return this.rectangle.y + this.offsetY;
       this.setError();
       return 0;
     },
@@ -85,7 +96,7 @@ export default defineComponent({
     },
     rectangleColor(): string {
       if (typeof this.rectangle.color === "string") return this.rectangle.color;
-      return "black";
+      return "#000000";
     },
     rectangleRotationInRad(): number {
       return (this.rectangleRotation * Math.PI) / 180;
@@ -114,7 +125,7 @@ export default defineComponent({
     },
     boundingBoxStyles(): object {
       return {
-        transform: `translate(${this.rectangle.x}px, ${this.rectangleY}px)
+        transform: `translate(${this.rectangleX}px, ${this.rectangleY}px)
           translate(-${this.boundingBoxWidth / 2}px, -${+this
           .boundingBoxHeight / 2}px)`,
         stroke: `rgb(255, 0, 255)`,
@@ -133,17 +144,45 @@ export default defineComponent({
       const l = (cmax + cmin) / 2;
       return l < 0.6 ? "white" : "black";
     },
+    boardScale(): number {
+      if (this.projectInfo.width > this.projectInfo.height) {
+        return this.projectInfo.width / (window.innerWidth - 20);
+      }
+      return this.projectInfo.height / (window.innerHeight - 180);
+    },
     ...mapState(["projectInfo"])
-  },
-  mounted() {
-    console.log(this.textColor);
   },
   methods: {
     setError() {
       this.$store.commit("setError", true);
+    },
+    setDrag(e: any) {
+      this.draggable = true;
+      this.mouseX = e.layerX;
+      this.mouseY = e.layerY;
+    },
+    setDrop() {
+      this.draggable = false;
+    },
+    drag(e: any) {
+      if (this.draggable) {
+        const dx = e.layerX - this.mouseX;
+        const dy = e.layerY - this.mouseY;
+        this.offsetX += dx * this.boardScale;
+        this.offsetY += dy * this.boardScale;
+        this.mouseX = e.layerX;
+        this.mouseY = e.layerY;
+      }
     }
   }
 });
 </script>
 
-<style></style>
+<style scoped>
+text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+</style>
