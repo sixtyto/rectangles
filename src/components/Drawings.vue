@@ -145,10 +145,11 @@ export default defineComponent({
       return l < 0.6 ? "white" : "black";
     },
     boardScale(): number {
-      if (this.projectInfo.width > this.projectInfo.height) {
-        return this.projectInfo.width / (window.innerWidth - 20);
-      }
-      return this.projectInfo.height / (window.innerHeight - 180);
+      const svgHeight = document
+        .querySelector(".board>svg>rect")
+        ?.getBoundingClientRect().height;
+      if (svgHeight) return this.projectInfo.height / svgHeight;
+      return 1;
     },
     ...mapState(["projectInfo"])
   },
@@ -157,9 +158,11 @@ export default defineComponent({
       this.$store.commit("setError", true);
     },
     setDrag(e: any) {
+      console.log(this.boardScale);
       this.draggable = true;
       this.mouseX = e.layerX;
       this.mouseY = e.layerY;
+      console.log(e);
     },
     setDrop() {
       this.draggable = false;
