@@ -158,11 +158,9 @@ export default defineComponent({
       this.$store.commit("setError", true);
     },
     setDrag(e: any) {
-      console.log(this.boardScale);
       this.draggable = true;
       this.mouseX = e.layerX;
       this.mouseY = e.layerY;
-      console.log(e);
     },
     setDrop() {
       this.draggable = false;
