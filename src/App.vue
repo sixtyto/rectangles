@@ -27,4 +27,10 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+@media (max-width: 450px) {
+  hr {
+    display: none;
+  }
+}
+</style>

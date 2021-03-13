@@ -51,6 +51,7 @@ export default defineComponent({
   left: 5px;
   right: 5px;
   top: 160px;
+  touch-action: none;
 }
 .board > svg {
   height: 100%;

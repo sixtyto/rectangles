@@ -7,6 +7,10 @@
     @mouseleave="setDrop"
     @mouseup.stop="setDrop"
     @mousemove.stop="drag"
+    @touchstart="setDrag"
+    @touchcancel="setDrop"
+    @touchend="setDrop"
+    @touchmove="drag"
   />
   <rect
     :width="boundingBoxWidth"
@@ -159,20 +163,36 @@ export default defineComponent({
     },
     setDrag(e: any) {
       this.draggable = true;
-      this.mouseX = e.layerX;
-      this.mouseY = e.layerY;
+      if (e.type.includes("mouse")) {
+        this.mouseX = e.layerX;
+        this.mouseY = e.layerY;
+      }
+      if (e.type.includes("touch")) {
+        this.mouseX = e.changedTouches[0].clientX;
+        this.mouseY = e.changedTouches[0].clientY;
+      }
     },
     setDrop() {
       this.draggable = false;
     },
     drag(e: any) {
       if (this.draggable) {
-        const dx = e.layerX - this.mouseX;
-        const dy = e.layerY - this.mouseY;
-        this.offsetX += dx * this.boardScale;
-        this.offsetY += dy * this.boardScale;
-        this.mouseX = e.layerX;
-        this.mouseY = e.layerY;
+        if (e.type.includes("mouse")) {
+          const dx = e.layerX - this.mouseX;
+          const dy = e.layerY - this.mouseY;
+          this.offsetX += dx * this.boardScale;
+          this.offsetY += dy * this.boardScale;
+          this.mouseX = e.layerX;
+          this.mouseY = e.layerY;
+        }
+        if (e.type.includes("touch")) {
+          const dx = e.changedTouches[0].clientX - this.mouseX;
+          const dy = e.changedTouches[0].clientY - this.mouseY;
+          this.offsetX += dx * this.boardScale;
+          this.offsetY += dy * this.boardScale;
+          this.mouseX = e.changedTouches[0].clientX;
+          this.mouseY = e.changedTouches[0].clientY;
+        }
       }
     }
   }
