@@ -1,6 +1,7 @@
 <template>
-  <div class="board" ref="board" v-if="isReady">
+  <div class="board" v-if="isReady">
     <svg :viewBox="viewBoxSize">
+      <rect :width="boardWidth" :height="boardHeight" :fill="boardColor" />
       <drawings
         v-for="rectangle in rectangles"
         :key="rectangle.id"
@@ -15,6 +16,9 @@ import { mapActions, mapState } from "vuex";
 import Drawings from "./Drawings.vue";
 
 export default defineComponent({
+  data: () => ({
+    boardColor: "#F9F9F9"
+  }),
   components: { Drawings },
   computed: {
     boardWidth(): number {
@@ -37,18 +41,18 @@ export default defineComponent({
 
 <style scoped>
 .board {
-  width: 100vw;
+  width: calc(100vw - 10px);
   background-color: pink;
   display: grid;
   place-items: center;
   padding: 5px;
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
   top: 160px;
 }
 .board > svg {
-  background-color: white;
   height: 100%;
   width: 100%;
 }

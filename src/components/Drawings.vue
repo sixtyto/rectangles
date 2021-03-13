@@ -10,7 +10,7 @@
     :style="boundingBoxStyles"
   />
   <circle r="4" fill="red" :cx="rectangleX" :cy="rectangleY" />
-  <text fill="white" :x="rectangleX + 10" :y="rectangleY - 5">
+  <text :fill="textColor" :x="rectangleX + 10" :y="rectangleY - 5">
     {{ rectangleRotation }}°
   </text>
 </template>
@@ -124,7 +124,19 @@ export default defineComponent({
         strokeOpacity: 0.5
       };
     },
+    textColor(): string {
+      const red = parseInt(this.rectangle.color.slice(1, 3), 16) / 255;
+      const green = parseInt(this.rectangle.color.slice(3, 5), 16) / 255;
+      const blue = parseInt(this.rectangle.color.slice(5, 7), 16) / 255;
+      const cmin = Math.min(red, green, blue);
+      const cmax = Math.max(red, green, blue);
+      const l = (cmax + cmin) / 2;
+      return l < 0.6 ? "white" : "black";
+    },
     ...mapState(["projectInfo"])
+  },
+  mounted() {
+    console.log(this.textColor);
   },
   methods: {
     setError() {
