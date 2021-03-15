@@ -3,14 +3,14 @@
     :width="rectangleWidth"
     :height="rectangleHeight"
     :style="rectangleStyles"
-    @mousedown.stop="setDrag"
+    @mousedown.stop="setMouseDrag"
     @mouseleave="setDrop"
     @mouseup.stop="setDrop"
-    @mousemove.stop="drag"
-    @touchstart="setDrag"
+    @mousemove.stop="dragMouse"
+    @touchstart="setTouchDrag"
     @touchcancel="setDrop"
     @touchend="setDrop"
-    @touchmove="drag"
+    @touchmove="dragTouch"
   />
   <rect
     :width="boundingBoxWidth"
@@ -26,16 +26,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { mapState } from "vuex";
-
-type Rectangle = {
-  id: string;
-  color: string;
-  rotation: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
+import { Rectangle } from "@/store";
 
 export default defineComponent({
   data: () => ({
@@ -161,38 +152,37 @@ export default defineComponent({
     setError() {
       this.$store.commit("setError", true);
     },
-    setDrag(e: any) {
+    setMouseDrag(e: MouseEvent) {
       this.draggable = true;
-      if (e.type.includes("mouse")) {
-        this.mouseX = e.layerX;
-        this.mouseY = e.layerY;
-      }
-      if (e.type.includes("touch")) {
-        this.mouseX = e.changedTouches[0].clientX;
-        this.mouseY = e.changedTouches[0].clientY;
-      }
+      this.mouseX = e.clientX;
+      this.mouseY = e.clientY;
+    },
+    setTouchDrag(e: TouchEvent) {
+      this.draggable = true;
+      this.mouseX = e.changedTouches[0].clientX;
+      this.mouseY = e.changedTouches[0].clientY;
     },
     setDrop() {
       this.draggable = false;
     },
-    drag(e: any) {
+    dragMouse(e: MouseEvent) {
       if (this.draggable) {
-        if (e.type.includes("mouse")) {
-          const dx = e.layerX - this.mouseX;
-          const dy = e.layerY - this.mouseY;
-          this.offsetX += dx * this.boardScale;
-          this.offsetY += dy * this.boardScale;
-          this.mouseX = e.layerX;
-          this.mouseY = e.layerY;
-        }
-        if (e.type.includes("touch")) {
-          const dx = e.changedTouches[0].clientX - this.mouseX;
-          const dy = e.changedTouches[0].clientY - this.mouseY;
-          this.offsetX += dx * this.boardScale;
-          this.offsetY += dy * this.boardScale;
-          this.mouseX = e.changedTouches[0].clientX;
-          this.mouseY = e.changedTouches[0].clientY;
-        }
+        const dx = e.clientX - this.mouseX;
+        const dy = e.clientY - this.mouseY;
+        this.offsetX += dx * this.boardScale;
+        this.offsetY += dy * this.boardScale;
+        this.mouseX = e.clientX;
+        this.mouseY = e.clientY;
+      }
+    },
+    dragTouch(e: TouchEvent) {
+      if (this.draggable) {
+        const dx = e.changedTouches[0].clientX - this.mouseX;
+        const dy = e.changedTouches[0].clientY - this.mouseY;
+        this.offsetX += dx * this.boardScale;
+        this.offsetY += dy * this.boardScale;
+        this.mouseX = e.changedTouches[0].clientX;
+        this.mouseY = e.changedTouches[0].clientY;
       }
     }
   }

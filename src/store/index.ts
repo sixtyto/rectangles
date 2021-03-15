@@ -1,22 +1,25 @@
 import { createStore } from "vuex";
 import axios from "axios";
 
-export type State = {
+export type Rectangle = {
   id: string;
-  isError: boolean;
-  projectInfo: object;
-  rectangles: object[];
+  color: string;
+  rotation: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };
 
 type ProjectInfo = {
   id: string;
   height: number;
-  items: object[];
+  items: Rectangle[];
   name: string;
   width: number;
 };
 
-export default createStore<State>({
+export default createStore({
   state: {
     projectInfo: {
       id: "",
