@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import { Rectangle } from "@/store";
 
 export default defineComponent({
@@ -47,7 +47,7 @@ export default defineComponent({
       if (
         typeof this.rectangle.height === "number" &&
         this.rectangle.height > 0 &&
-        this.rectangle.height < this.projectInfo.height
+        this.rectangle.height < this.boardHeight
       )
         return this.rectangle.height;
       this.setError();
@@ -57,7 +57,7 @@ export default defineComponent({
       if (
         typeof this.rectangle.width === "number" &&
         this.rectangle.width > 0 &&
-        this.rectangle.width < this.projectInfo.width
+        this.rectangle.width < this.boardWidth
       )
         return this.rectangle.width;
       this.setError();
@@ -67,7 +67,7 @@ export default defineComponent({
       if (
         typeof this.rectangle.x === "number" &&
         this.rectangle.x > 0 &&
-        this.rectangle.x < this.projectInfo.width
+        this.rectangle.x < this.boardWidth
       )
         return this.rectangle.x + this.offsetX;
       this.setError();
@@ -77,7 +77,7 @@ export default defineComponent({
       if (
         typeof this.rectangle.y === "number" &&
         this.rectangle.y > 0 &&
-        this.rectangle.y < this.projectInfo.height
+        this.rectangle.y < this.boardHeight
       )
         return this.rectangle.y + this.offsetY;
       this.setError();
@@ -143,10 +143,10 @@ export default defineComponent({
       const svgHeight = document
         .querySelector(".board>svg>rect")
         ?.getBoundingClientRect().height;
-      if (svgHeight) return this.projectInfo.height / svgHeight;
+      if (svgHeight) return this.boardHeight / svgHeight;
       return 1;
     },
-    ...mapState(["projectInfo"])
+    ...mapGetters(["boardWidth", "boardHeight"])
   },
   methods: {
     setError() {

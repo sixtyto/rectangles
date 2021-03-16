@@ -29,19 +29,40 @@ export default createStore({
       width: 0
     } as ProjectInfo,
     isError: false,
-    rectangles: [],
     id: ""
   },
   mutations: {
     setProjectInfo(state, payload) {
       state.projectInfo = payload;
-      state.rectangles = payload.items;
     },
     setId(state, payload) {
       state.id = payload;
     },
     setError(state, payload) {
       state.isError = payload;
+    }
+  },
+  getters: {
+    rectangles(state): Rectangle[] {
+      return state.projectInfo.items;
+    },
+    projectName(state): string {
+      return state.projectInfo.name;
+    },
+    projectId(state): string {
+      return state.projectInfo.id;
+    },
+    isReady(state): boolean {
+      return state.projectInfo.items?.length !== 0;
+    },
+    boardWidth(state): number {
+      return state.projectInfo.width;
+    },
+    boardHeight(state): number {
+      return state.projectInfo.height;
+    },
+    viewBoxSize(state): string {
+      return `0 0 ${state.projectInfo.width} ${state.projectInfo.height}`;
     }
   },
   actions: {

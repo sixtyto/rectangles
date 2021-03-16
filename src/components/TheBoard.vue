@@ -12,7 +12,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import Drawings from "./Drawings.vue";
 
 export default defineComponent({
@@ -21,19 +21,13 @@ export default defineComponent({
   }),
   components: { Drawings },
   computed: {
-    boardWidth(): number {
-      return this.projectInfo.width;
-    },
-    boardHeight(): number {
-      return this.projectInfo.height;
-    },
-    viewBoxSize(): string {
-      return `0 0 ${this.boardWidth} ${this.boardHeight}`;
-    },
-    isReady(): boolean {
-      return !!this.rectangles.length;
-    },
-    ...mapState(["projectInfo", "rectangles"])
+    ...mapGetters([
+      "boardWidth",
+      "boardHeight",
+      "viewBoxSize",
+      "rectangles",
+      "isReady"
+    ])
   },
   methods: mapActions(["getRectangles"])
 });

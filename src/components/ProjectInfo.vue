@@ -9,20 +9,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 export default defineComponent({
   computed: {
-    projectName(): string {
-      return this.projectInfo.name;
-    },
-    projectId(): string {
-      return this.projectInfo.id;
-    },
-    isReady(): boolean {
-      return this.projectInfo.items?.length !== 0;
-    },
-    ...mapState(["projectInfo"])
+    ...mapGetters(["projectName", "projectId", "isReady"])
   }
 });
 </script>
