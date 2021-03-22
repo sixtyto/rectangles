@@ -1,4 +1,4 @@
-import { createStore, Store } from "vuex";
+import { createStore, Store, useStore as baseUseStore } from "vuex";
 import { InjectionKey, State } from "vue";
 import actions from "./actions";
 import mutations from "./mutations";
@@ -13,3 +13,7 @@ export const store = createStore<State>({
   getters,
   actions
 });
+
+export function useStore() {
+  return baseUseStore(key);
+}

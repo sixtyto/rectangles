@@ -7,8 +7,8 @@ import { GET_RANDOM_SEED, GET_RECTANGLES } from "./actionTypes";
 const actions: ActionTree<State, State> = {
   [GET_RANDOM_SEED]: async ({ commit, dispatch }) => {
     const data = await axios.get("https://recruitment01.vercel.app/api/init");
-    commit("setId", data.data.id);
-    await dispatch("getRectangles");
+    commit(SET_ID, data.data.id);
+    await dispatch(GET_RECTANGLES);
   },
   [GET_RECTANGLES]: async ({ commit, state, dispatch }) => {
     const { id } = state;
@@ -24,7 +24,7 @@ const actions: ActionTree<State, State> = {
         commit(SET_ERROR, true);
       }
     } else {
-      await dispatch("getRandomSeed");
+      await dispatch(GET_RANDOM_SEED);
     }
   }
 };

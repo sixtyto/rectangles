@@ -8,12 +8,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { mapGetters } from "vuex";
+import { computed, defineComponent } from "vue";
+import { useStore } from "@/store/store";
 
 export default defineComponent({
-  computed: {
-    ...mapGetters(["projectName", "projectId", "isReady"])
+  setup() {
+    const store = useStore();
+    return {
+      projectName: computed(() => store.getters.projectName),
+      projectId: computed(() => store.getters.projectId),
+      isReady: computed(() => store.getters.isReady)
+    };
   }
 });
 </script>

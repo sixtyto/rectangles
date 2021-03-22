@@ -11,25 +11,24 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
-import { mapActions, mapGetters } from "vuex";
+import { defineComponent, ref, computed } from "vue";
+import { useStore } from "@/store/store";
 import Drawings from "./Drawings.vue";
 
 export default defineComponent({
-  data: () => ({
-    boardColor: "#F9F9F9"
-  }),
-  components: { Drawings },
-  computed: {
-    ...mapGetters([
-      "boardWidth",
-      "boardHeight",
-      "viewBoxSize",
-      "rectangles",
-      "isReady"
-    ])
+  setup() {
+    const store = useStore();
+    const boardColor = ref("#F9F9F9");
+    return {
+      boardColor,
+      boardWidth: computed(() => store.getters.boardWidth),
+      boardHeight: computed(() => store.getters.boardHeight),
+      viewBoxSize: computed(() => store.getters.viewBoxSize),
+      rectangles: computed(() => store.getters.rectangles),
+      isReady: computed(() => store.getters.isReady)
+    };
   },
-  methods: mapActions(["getRectangles"])
+  components: { Drawings }
 });
 </script>
 

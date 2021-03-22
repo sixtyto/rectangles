@@ -3,11 +3,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { mapState } from "vuex";
+import { defineComponent, computed } from "vue";
+import { useStore } from "@/store/store";
 
 export default defineComponent({
-  computed: mapState(["isError"])
+  setup() {
+    const store = useStore();
+    return { isError: computed(() => store.state.isError) };
+  }
 });
 </script>
 

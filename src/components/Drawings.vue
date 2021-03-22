@@ -24,166 +24,209 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import { mapGetters } from "vuex";
+import { computed, defineComponent, PropType, reactive, ref } from "vue";
+import { useStore } from "@/store/store";
 import { Rectangle } from "@/store/types";
+import { SET_ERROR } from "@/store/mutationsTypes";
 
 export default defineComponent({
-  data: () => ({
-    draggable: false,
-    offsetX: 0,
-    offsetY: 0,
-    mouseX: 0,
-    mouseY: 0
-  }),
-  props: {
-    rectangle: {
-      type: Object as PropType<Rectangle>,
-      required: true
-    }
-  },
-  computed: {
-    rectangleHeight(): number {
+  setup(props) {
+    const store = useStore();
+    const setError = () => store.commit(SET_ERROR, true);
+    const draggable = ref(false);
+    const offset = reactive({
+      x: 0,
+      y: 0
+    });
+    const mouse = reactive({
+      x: 0,
+      y: 0
+    });
+    const boardWidth = computed(() => store.getters.boardWidth);
+    const boardHeight = computed(() => store.getters.boardHeight);
+
+    const rectangleHeight = computed(() => {
       if (
-        typeof this.rectangle.height === "number" &&
-        this.rectangle.height > 0 &&
-        this.rectangle.height < this.boardHeight
+        typeof props.rectangle.height === "number" &&
+        props.rectangle.height > 0 &&
+        props.rectangle.height < boardHeight.value
       )
-        return this.rectangle.height;
-      this.setError();
+        return props.rectangle.height;
+      setError();
       return 0;
-    },
-    rectangleWidth(): number {
+    });
+
+    const rectangleWidth = computed(() => {
       if (
-        typeof this.rectangle.width === "number" &&
-        this.rectangle.width > 0 &&
-        this.rectangle.width < this.boardWidth
+        typeof props.rectangle.width === "number" &&
+        props.rectangle.width > 0 &&
+        props.rectangle.width < boardWidth.value
       )
-        return this.rectangle.width;
-      this.setError();
+        return props.rectangle.width;
+      setError();
       return 0;
-    },
-    rectangleX(): number {
+    });
+
+    const rectangleX = computed(() => {
       if (
-        typeof this.rectangle.x === "number" &&
-        this.rectangle.x > 0 &&
-        this.rectangle.x < this.boardWidth
+        typeof props.rectangle.x === "number" &&
+        props.rectangle.x > 0 &&
+        props.rectangle.x < boardWidth.value
       )
-        return this.rectangle.x + this.offsetX;
-      this.setError();
+        return props.rectangle.x + offset.x;
+      setError();
       return 0;
-    },
-    rectangleY(): number {
+    });
+
+    const rectangleY = computed(() => {
       if (
-        typeof this.rectangle.y === "number" &&
-        this.rectangle.y > 0 &&
-        this.rectangle.y < this.boardHeight
+        typeof props.rectangle.y === "number" &&
+        props.rectangle.y > 0 &&
+        props.rectangle.y < boardHeight.value
       )
-        return this.rectangle.y + this.offsetY;
-      this.setError();
+        return props.rectangle.y + offset.y;
+      setError();
       return 0;
-    },
-    rectangleRotation(): number {
-      if (typeof this.rectangle.rotation === "number")
-        return this.rectangle.rotation;
-      this.setError();
+    });
+
+    const rectangleRotation = computed(() => {
+      if (typeof props.rectangle.rotation === "number")
+        return props.rectangle.rotation;
+      setError();
       return 0;
-    },
-    rectangleColor(): string {
-      if (typeof this.rectangle.color === "string") return this.rectangle.color;
+    });
+
+    const rectangleColor = computed(() => {
+      if (typeof props.rectangle.color === "string")
+        return props.rectangle.color;
       return "#000000";
-    },
-    rectangleRotationInRad(): number {
-      return (this.rectangleRotation * Math.PI) / 180;
-    },
-    rectangleStyles(): object {
+    });
+
+    const rectangleRotationInRad = computed(() => {
+      return (rectangleRotation.value * Math.PI) / 180;
+    });
+
+    const rectangleStyles = computed(() => {
       return {
-        transform: `translate(${this.rectangleX}px, ${
-          this.rectangleY
-        }px) rotate(${this.rectangleRotation}deg) translate(-${this
-          .rectangleWidth / 2}px, -${this.rectangleHeight / 2}px)`,
-        transformOrigin: `${this.rectangleX}, ${this.rectangleY}`,
-        fill: this.rectangleColor
+        transform: `translate(${rectangleX.value}px, ${
+          rectangleY.value
+        }px) rotate(${
+          rectangleRotation.value
+        }deg) translate(-${rectangleWidth.value /
+          2}px, -${rectangleHeight.value / 2}px)`,
+        transformOrigin: `${rectangleX.value}, ${rectangleY.value}`,
+        fill: rectangleColor.value
       };
-    },
-    boundingBoxHeight(): number {
+    });
+
+    const boundingBoxHeight = computed(() => {
       return (
-        this.rectangleWidth * Math.abs(Math.sin(this.rectangleRotationInRad)) +
-        this.rectangleHeight * Math.abs(Math.cos(this.rectangleRotationInRad))
+        rectangleWidth.value *
+          Math.abs(Math.sin(rectangleRotationInRad.value)) +
+        rectangleHeight.value * Math.abs(Math.cos(rectangleRotationInRad.value))
       );
-    },
-    boundingBoxWidth(): number {
+    });
+
+    const boundingBoxWidth = computed(() => {
       return (
-        this.rectangleWidth * Math.abs(Math.cos(this.rectangleRotationInRad)) +
-        this.rectangleHeight * Math.abs(Math.sin(this.rectangleRotationInRad))
+        rectangleWidth.value *
+          Math.abs(Math.cos(rectangleRotationInRad.value)) +
+        rectangleHeight.value * Math.abs(Math.sin(rectangleRotationInRad.value))
       );
-    },
-    boundingBoxStyles(): object {
+    });
+
+    const boundingBoxStyles = computed(() => {
       return {
-        transform: `translate(${this.rectangleX}px, ${this.rectangleY}px)
-          translate(-${this.boundingBoxWidth / 2}px, -${+this
-          .boundingBoxHeight / 2}px)`,
+        transform: `
+          translate(${rectangleX.value - boundingBoxWidth.value / 2}px,
+          ${rectangleY.value - boundingBoxHeight.value / 2}px)`,
         stroke: `rgb(255, 0, 255)`,
         strokeWidth: 3,
         fill: "none",
         fillOpacity: 0,
         strokeOpacity: 0.5
       };
-    },
-    textColor(): string {
-      const red = parseInt(this.rectangle.color.slice(1, 3), 16) / 255;
-      const green = parseInt(this.rectangle.color.slice(3, 5), 16) / 255;
-      const blue = parseInt(this.rectangle.color.slice(5, 7), 16) / 255;
+    });
+
+    const textColor = computed(() => {
+      const red = parseInt(props.rectangle.color.slice(1, 3), 16) / 255;
+      const green = parseInt(props.rectangle.color.slice(3, 5), 16) / 255;
+      const blue = parseInt(props.rectangle.color.slice(5, 7), 16) / 255;
       const cmin = Math.min(red, green, blue);
       const cmax = Math.max(red, green, blue);
       const l = (cmax + cmin) / 2;
       return l < 0.6 ? "white" : "black";
-    },
-    boardScale(): number {
+    });
+
+    const boardScale = computed(() => {
       const svgHeight = document
         .querySelector(".board>svg>rect")
         ?.getBoundingClientRect().height;
-      if (svgHeight) return this.boardHeight / svgHeight;
+      if (svgHeight) return boardHeight.value / svgHeight;
       return 1;
-    },
-    ...mapGetters(["boardWidth", "boardHeight"])
+    });
+
+    const setMouseDrag = (e: MouseEvent) => {
+      draggable.value = true;
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+
+    const setTouchDrag = (e: TouchEvent) => {
+      draggable.value = true;
+      mouse.x = e.changedTouches[0].clientX;
+      mouse.y = e.changedTouches[0].clientY;
+    };
+
+    const setDrop = () => {
+      draggable.value = false;
+    };
+
+    const dragMouse = (e: MouseEvent) => {
+      if (draggable.value) {
+        const dx = e.clientX - mouse.x;
+        const dy = e.clientY - mouse.y;
+        offset.x += dx * boardScale.value;
+        offset.y += dy * boardScale.value;
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }
+    };
+
+    const dragTouch = (e: TouchEvent) => {
+      if (draggable.value) {
+        const dx = e.changedTouches[0].clientX - mouse.x;
+        const dy = e.changedTouches[0].clientY - mouse.y;
+        offset.x += dx * boardScale.value;
+        offset.y += dy * boardScale.value;
+        mouse.x = e.changedTouches[0].clientX;
+        mouse.y = e.changedTouches[0].clientY;
+      }
+    };
+
+    return {
+      rectangleHeight,
+      rectangleWidth,
+      rectangleRotation,
+      rectangleStyles,
+      rectangleX,
+      rectangleY,
+      textColor,
+      boundingBoxHeight,
+      boundingBoxWidth,
+      boundingBoxStyles,
+      setError,
+      setMouseDrag,
+      setTouchDrag,
+      setDrop,
+      dragMouse,
+      dragTouch
+    };
   },
-  methods: {
-    setError() {
-      this.$store.commit("setError", true);
-    },
-    setMouseDrag(e: MouseEvent) {
-      this.draggable = true;
-      this.mouseX = e.clientX;
-      this.mouseY = e.clientY;
-    },
-    setTouchDrag(e: TouchEvent) {
-      this.draggable = true;
-      this.mouseX = e.changedTouches[0].clientX;
-      this.mouseY = e.changedTouches[0].clientY;
-    },
-    setDrop() {
-      this.draggable = false;
-    },
-    dragMouse(e: MouseEvent) {
-      if (this.draggable) {
-        const dx = e.clientX - this.mouseX;
-        const dy = e.clientY - this.mouseY;
-        this.offsetX += dx * this.boardScale;
-        this.offsetY += dy * this.boardScale;
-        this.mouseX = e.clientX;
-        this.mouseY = e.clientY;
-      }
-    },
-    dragTouch(e: TouchEvent) {
-      if (this.draggable) {
-        const dx = e.changedTouches[0].clientX - this.mouseX;
-        const dy = e.changedTouches[0].clientY - this.mouseY;
-        this.offsetX += dx * this.boardScale;
-        this.offsetY += dy * this.boardScale;
-        this.mouseX = e.changedTouches[0].clientX;
-        this.mouseY = e.changedTouches[0].clientY;
-      }
+  props: {
+    rectangle: {
+      type: Object as PropType<Rectangle>,
+      required: true
     }
   }
 });

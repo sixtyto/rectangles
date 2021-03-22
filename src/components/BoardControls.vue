@@ -15,21 +15,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { mapActions } from "vuex";
+import { computed, defineComponent } from "vue";
+import { useStore } from "@/store/store";
+import { GET_RECTANGLES } from "@/store/actionTypes";
+import { SET_ID } from "@/store/mutationsTypes";
 
 export default defineComponent({
-  computed: {
-    id: {
-      get(): string {
-        return this.$store.state.id;
-      },
-      set(value: string) {
-        this.$store.commit("setId", value);
-      }
-    }
-  },
-  methods: mapActions(["getRectangles"])
+  setup() {
+    const store = useStore();
+    return {
+      id: computed({
+        get: () => store.state.id,
+        set: value => store.commit(SET_ID, value)
+      }),
+      getRectangles: () => store.dispatch(GET_RECTANGLES)
+    };
+  }
 });
 </script>
 

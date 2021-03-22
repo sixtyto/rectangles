@@ -13,7 +13,7 @@ const state: State = {
     items: [],
     name: "",
     width: 0
-  } as ProjectInfo,
+  },
   isError: false,
   id: ""
 };
