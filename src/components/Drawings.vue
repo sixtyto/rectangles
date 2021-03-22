@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { mapGetters } from "vuex";
-import { Rectangle } from "@/store";
+import { Rectangle } from "@/store/types";
 
 export default defineComponent({
   data: () => ({

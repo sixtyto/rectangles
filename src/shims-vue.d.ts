@@ -1,5 +1,6 @@
-import { ComponentCustomProperties } from "vue";
+import { ComponentCustomProperties, State } from "vue";
 import { Store } from "vuex";
+import { ProjectInfo } from "@/store/types";
 
 declare module "@vue/runtime-core" {
   // Declare your own store states.
@@ -7,7 +8,6 @@ declare module "@vue/runtime-core" {
     id: string;
     isError: boolean;
     projectInfo: ProjectInfo;
-    rectangles: Rectangle[];
   }
 
   interface ComponentCustomProperties {
