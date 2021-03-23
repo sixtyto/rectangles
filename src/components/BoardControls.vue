@@ -1,10 +1,10 @@
 <template>
   <form class="input-group my-3" @submit.prevent="getRectangles">
     <input
-      type="text"
+      v-model="id"
       class="form-control"
       placeholder="Leave me empty for random seed"
-      v-model="id"
+      type="text"
     />
     <div class="input-group-append">
       <button class="btn btn-outline-secondary" type="submit">

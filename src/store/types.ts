@@ -15,3 +15,9 @@ export type ProjectInfo = {
   name: string;
   width: number;
 };
+
+export type State = {
+  id: string;
+  isError: boolean;
+  projectInfo: ProjectInfo;
+};

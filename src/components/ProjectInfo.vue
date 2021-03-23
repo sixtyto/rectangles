@@ -1,5 +1,5 @@
 <template>
-  <div class="row" v-if="isReady">
+  <div v-if="isReady" class="row">
     <div class=" col-sm-10 offset-sm-1 text_wrapper">
       <p>Name: {{ projectName }}</p>
       <p>Id: {{ projectId }}</p>

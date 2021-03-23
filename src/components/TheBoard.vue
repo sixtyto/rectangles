@@ -1,7 +1,7 @@
 <template>
-  <div class="board" v-if="isReady">
+  <div v-if="isReady" class="board">
     <svg :viewBox="viewBoxSize">
-      <rect :width="boardWidth" :height="boardHeight" :fill="boardColor" />
+      <rect :fill="boardColor" :height="boardHeight" :width="boardWidth" />
       <drawings
         v-for="rectangle in rectangles"
         :key="rectangle.id"
@@ -11,7 +11,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from "@/store/store";
 import Drawings from "./Drawings.vue";
 

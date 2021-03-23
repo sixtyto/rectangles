@@ -1,23 +1,23 @@
 <template>
   <rect
-    :width="rectangleWidth"
     :height="rectangleHeight"
     :style="rectangleStyles"
-    @mousedown.stop="setMouseDrag"
+    :width="rectangleWidth"
     @mouseleave="setDrop"
-    @mouseup.stop="setDrop"
-    @mousemove.stop="dragMouse"
-    @touchstart="setTouchDrag"
     @touchcancel="setDrop"
     @touchend="setDrop"
     @touchmove="dragTouch"
+    @touchstart="setTouchDrag"
+    @mousedown.stop="setMouseDrag"
+    @mouseup.stop="setDrop"
+    @mousemove.stop="dragMouse"
   />
   <rect
-    :width="boundingBoxWidth"
     :height="boundingBoxHeight"
     :style="boundingBoxStyles"
+    :width="boundingBoxWidth"
   />
-  <circle r="4" fill="red" :cx="rectangleX" :cy="rectangleY" />
+  <circle :cx="rectangleX" :cy="rectangleY" fill="red" r="4" />
   <text :fill="textColor" :x="rectangleX + 10" :y="rectangleY - 5">
     {{ rectangleRotation }}°
   </text>
@@ -31,6 +31,7 @@ import { SET_ERROR } from "@/store/mutationsTypes";
 
 export default defineComponent({
   setup(props) {
+    const { rectangle } = reactive(props);
     const store = useStore();
     const setError = () => store.commit(SET_ERROR, true);
     const draggable = ref(false);
@@ -42,63 +43,63 @@ export default defineComponent({
       x: 0,
       y: 0
     });
-    const boardWidth = computed(() => store.getters.boardWidth);
-    const boardHeight = computed(() => store.getters.boardHeight);
+    const board = reactive({
+      width: computed(() => store.getters.boardWidth),
+      height: computed(() => store.getters.boardHeight)
+    });
 
     const rectangleHeight = computed(() => {
       if (
-        typeof props.rectangle.height === "number" &&
-        props.rectangle.height > 0 &&
-        props.rectangle.height < boardHeight.value
+        typeof rectangle.height === "number" &&
+        rectangle.height > 0 &&
+        rectangle.height < board.height
       )
-        return props.rectangle.height;
+        return rectangle.height;
       setError();
       return 0;
     });
 
     const rectangleWidth = computed(() => {
       if (
-        typeof props.rectangle.width === "number" &&
-        props.rectangle.width > 0 &&
-        props.rectangle.width < boardWidth.value
+        typeof rectangle.width === "number" &&
+        rectangle.width > 0 &&
+        rectangle.width < board.width
       )
-        return props.rectangle.width;
+        return rectangle.width;
       setError();
       return 0;
     });
 
     const rectangleX = computed(() => {
       if (
-        typeof props.rectangle.x === "number" &&
-        props.rectangle.x > 0 &&
-        props.rectangle.x < boardWidth.value
+        typeof rectangle.x === "number" &&
+        rectangle.x > 0 &&
+        rectangle.x < board.width
       )
-        return props.rectangle.x + offset.x;
+        return rectangle.x + offset.x;
       setError();
       return 0;
     });
 
     const rectangleY = computed(() => {
       if (
-        typeof props.rectangle.y === "number" &&
-        props.rectangle.y > 0 &&
-        props.rectangle.y < boardHeight.value
+        typeof rectangle.y === "number" &&
+        rectangle.y > 0 &&
+        rectangle.y < board.height
       )
-        return props.rectangle.y + offset.y;
+        return rectangle.y + offset.y;
       setError();
       return 0;
     });
 
     const rectangleRotation = computed(() => {
-      if (typeof props.rectangle.rotation === "number")
-        return props.rectangle.rotation;
+      if (typeof rectangle.rotation === "number") return rectangle.rotation;
       setError();
       return 0;
     });
 
     const rectangleColor = computed(() => {
-      if (typeof props.rectangle.color === "string")
-        return props.rectangle.color;
+      if (typeof rectangle.color === "string") return rectangle.color;
       return "#000000";
     });
 
@@ -108,13 +109,10 @@ export default defineComponent({
 
     const rectangleStyles = computed(() => {
       return {
-        transform: `translate(${rectangleX.value}px, ${
-          rectangleY.value
-        }px) rotate(${
-          rectangleRotation.value
-        }deg) translate(-${rectangleWidth.value /
-          2}px, -${rectangleHeight.value / 2}px)`,
-        transformOrigin: `${rectangleX.value}, ${rectangleY.value}`,
+        transform: `translate(${rectangleX.value}px, ${rectangleY.value}px)
+        rotate(${rectangleRotation.value}deg)
+        translate(-${rectangleWidth.value / 2}px,
+                -${rectangleHeight.value / 2}px)`,
         fill: rectangleColor.value
       };
     });
@@ -149,9 +147,9 @@ export default defineComponent({
     });
 
     const textColor = computed(() => {
-      const red = parseInt(props.rectangle.color.slice(1, 3), 16) / 255;
-      const green = parseInt(props.rectangle.color.slice(3, 5), 16) / 255;
-      const blue = parseInt(props.rectangle.color.slice(5, 7), 16) / 255;
+      const red = parseInt(rectangle.color.slice(1, 3), 16) / 255;
+      const green = parseInt(rectangle.color.slice(3, 5), 16) / 255;
+      const blue = parseInt(rectangle.color.slice(5, 7), 16) / 255;
       const cmin = Math.min(red, green, blue);
       const cmax = Math.max(red, green, blue);
       const l = (cmax + cmin) / 2;
@@ -162,7 +160,7 @@ export default defineComponent({
       const svgHeight = document
         .querySelector(".board>svg>rect")
         ?.getBoundingClientRect().height;
-      if (svgHeight) return boardHeight.value / svgHeight;
+      if (svgHeight) return board.height / svgHeight;
       return 1;
     });
 

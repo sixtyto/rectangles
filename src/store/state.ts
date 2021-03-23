@@ -1,10 +1,4 @@
-import { ProjectInfo } from "@/store/types";
-
-type State = {
-  id: string;
-  isError: boolean;
-  projectInfo: ProjectInfo;
-};
+import { State } from "@/store/types";
 
 const state: State = {
   projectInfo: {

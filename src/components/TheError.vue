@@ -1,9 +1,11 @@
 <template>
-  <div class="error" v-if="isError">Something went wrong :(</div>
+  <div v-if="isError" class="error">
+    Something went wrong :(
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { computed, defineComponent } from "vue";
 import { useStore } from "@/store/store";
 
 export default defineComponent({
