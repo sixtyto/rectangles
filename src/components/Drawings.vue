@@ -29,6 +29,7 @@ import { useStore } from "@/store/store";
 import { Rectangle } from "@/store/types";
 import { SET_ERROR } from "@/store/mutationsTypes";
 import useValidatedSize from "@/hooks/useValidatedSize";
+import useContrastTextColor from "@/hooks/useContrastTextColor";
 
 export default defineComponent({
   setup(props) {
@@ -49,13 +50,26 @@ export default defineComponent({
       height: computed(() => store.getters.boardHeight)
     });
 
-    const rectangleHeight = useValidatedSize(rectangle.height, board.height);
-    const rectangleWidth = useValidatedSize(rectangle.width, board.width);
+    const rectangleHeight = computed(() =>
+      useValidatedSize(rectangle.height, board.height)
+    );
+    const rectangleWidth = computed(() =>
+      useValidatedSize(rectangle.width, board.width)
+    );
 
-    const rectangleX = useValidatedSize(rectangle.x, board.width);
-    const rectangleY = useValidatedSize(rectangle.y, board.height);
+    const rectangleX = computed(
+      () => useValidatedSize(rectangle.x, board.width) + offset.x
+    );
+    const rectangleY = computed(
+      () => useValidatedSize(rectangle.y, board.height) + offset.y
+    );
 
-    if (rectangleHeight * rectangleWidth * rectangleX * rectangleY === 0)
+    if (
+      rectangleHeight.value === 0 ||
+      rectangleWidth.value === 0 ||
+      rectangleX.value === 0 ||
+      rectangleY.value === 0
+    )
       setError();
 
     const rectangleRotation = computed(() => {
@@ -112,15 +126,7 @@ export default defineComponent({
       };
     });
 
-    const textColor = computed(() => {
-      const red = parseInt(rectangle.color.slice(1, 3), 16) / 255;
-      const green = parseInt(rectangle.color.slice(3, 5), 16) / 255;
-      const blue = parseInt(rectangle.color.slice(5, 7), 16) / 255;
-      const cmin = Math.min(red, green, blue);
-      const cmax = Math.max(red, green, blue);
-      const l = (cmax + cmin) / 2;
-      return l < 0.6 ? "white" : "black";
-    });
+    const textColor = useContrastTextColor(rectangle.color);
 
     const boardScale = computed(() => {
       const svgHeight = document
