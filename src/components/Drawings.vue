@@ -28,6 +28,7 @@ import { computed, defineComponent, PropType, reactive, ref } from "vue";
 import { useStore } from "@/store/store";
 import { Rectangle } from "@/store/types";
 import { SET_ERROR } from "@/store/mutationsTypes";
+import useValidatedSize from "@/hooks/useValidatedSize";
 
 export default defineComponent({
   setup(props) {
@@ -48,49 +49,14 @@ export default defineComponent({
       height: computed(() => store.getters.boardHeight)
     });
 
-    const rectangleHeight = computed(() => {
-      if (
-        typeof rectangle.height === "number" &&
-        rectangle.height > 0 &&
-        rectangle.height < board.height
-      )
-        return rectangle.height;
-      setError();
-      return 0;
-    });
+    const rectangleHeight = useValidatedSize(rectangle.height, board.height);
+    const rectangleWidth = useValidatedSize(rectangle.width, board.width);
 
-    const rectangleWidth = computed(() => {
-      if (
-        typeof rectangle.width === "number" &&
-        rectangle.width > 0 &&
-        rectangle.width < board.width
-      )
-        return rectangle.width;
-      setError();
-      return 0;
-    });
+    const rectangleX = useValidatedSize(rectangle.x, board.width);
+    const rectangleY = useValidatedSize(rectangle.y, board.height);
 
-    const rectangleX = computed(() => {
-      if (
-        typeof rectangle.x === "number" &&
-        rectangle.x > 0 &&
-        rectangle.x < board.width
-      )
-        return rectangle.x + offset.x;
+    if (rectangleHeight * rectangleWidth * rectangleX * rectangleY === 0)
       setError();
-      return 0;
-    });
-
-    const rectangleY = computed(() => {
-      if (
-        typeof rectangle.y === "number" &&
-        rectangle.y > 0 &&
-        rectangle.y < board.height
-      )
-        return rectangle.y + offset.y;
-      setError();
-      return 0;
-    });
 
     const rectangleRotation = computed(() => {
       if (typeof rectangle.rotation === "number") return rectangle.rotation;
