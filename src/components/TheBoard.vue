@@ -11,16 +11,15 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent } from "vue";
 import { useStore } from "@/store/store";
 import Drawings from "./Drawings.vue";
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const boardColor = ref("#F9F9F9");
     return {
-      boardColor,
+      boardColor: "#F9F9F9",
       boardWidth: computed(() => store.getters.boardWidth),
       boardHeight: computed(() => store.getters.boardHeight),
       viewBoxSize: computed(() => store.getters.viewBoxSize),
